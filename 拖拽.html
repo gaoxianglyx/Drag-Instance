@@ -1,0 +1,74 @@
+<!doctype>
+<html>
+<head>
+<style>
+#box {
+    position: absolute;
+    top: 50px;
+    left: 50;
+    width: 100px;
+    height: 100px;
+    background-color: red;
+}
+</style>
+ 
+<script type="text/javascript">
+var x = 0, y = 0;
+window.onload = function() {    
+    var box = document.getElementById("box");   
+    addEventHandler(box, "mousedown", dragDown);
+    addEventHandler(document, "mousedown", docDragDown);
+}
+//兼容获取event
+function getEvent(e) {
+    return e || window.event;
+}
+//兼容IE和Moz/Ff分别支持attachEvent和addEventListener
+function addEventHandler(obj, type, func) {
+    if (window.attachEvent) {
+        obj.attachEvent("on" + type, func);
+    }
+    else if (window.addEventListener) {
+        obj.addEventListener(type, func);
+    }
+    else 
+        console.log ("add event error");
+}
+function removeEventHandler(obj, type, func) {
+    if (window.detachEvent) {
+        obj.detachEvent("on" + type, func);
+    }
+    else if (window.removeEventListener) {
+        obj.removeEventListener(type, func);
+    }
+    else 
+        console.log ("remove event error");
+}
+//将mouse的move和up事件绑定在document上面
+function dragDown() {  
+    addEventHandler(document, "mousemove", dragMove);
+    addEventHandler(document, "mouseup", dragUp);
+}
+//记录鼠标和被移动对象的初始偏移位置
+function docDragDown(e) {
+    e = getEvent(e);
+    var box = document.getElementById("box");   
+    x = e.clientX - box.offsetLeft;   
+    y = e.clientY - box.offsetTop;  
+}
+function dragMove(e) {
+    e = getEvent(e);
+    var box = document.getElementById("box");   
+    box.style.left = e.clientX - x + "px";
+    box.style.top = e.clientY - y + "px";
+}
+function dragUp() {
+    removeEventHandler(document, "mousemove", dragMove);
+    removeEventHandler(document, "mouseup", dragUp);
+}
+</script>
+</head>
+    <body>
+    <div id="box"></div>
+    </body>
+</html>
